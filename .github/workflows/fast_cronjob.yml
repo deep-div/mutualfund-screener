@@ -81,12 +81,12 @@ jobs:
         if: always()
         run: |
           mkdir -p .github/logs
-          echo "$(date -u +'%Y-%m-%d %H:%M:%S UTC') - not-enriched pipeline - ${{ job.status }}" >> .github/logs/not_enriched.log
+          echo "$(date -u +'%Y-%m-%d %H:%M:%S UTC') - not-enriched pipeline - ${{ job.status }}" >> .github/logs/logs
 
           git config user.name "deep-div"
           git config user.email "div20023041@gmail.com"
 
-          git add .github/logs/not_enriched.log
+          git add .github/logs/logs
           git commit -m "Log not-enriched pipeline run (${{ job.status }})"
 
           git pull --rebase origin ${{ github.ref_name }}
