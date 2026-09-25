@@ -1,12 +1,11 @@
-name: Cron Job - Not Enriched 
+name: Cron Job - Not Enriched
 
 permissions:
   contents: write
 
 on:
   schedule:
-    # 08:00 AM IST on Tuesday, Thursday, and Saturday (GitHub Actions uses UTC)
-    - cron: '30 2 * * 2,4,6'
+    - cron: '30 2 * * *'
   workflow_dispatch:
 
 jobs:
@@ -17,16 +16,42 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Pick today's run days
+        id: pick
+        run: |
+          python3 - <<'PY'
+          import random, datetime, os
+
+          now = datetime.datetime.utcnow()
+          iso_year, iso_week, iso_day = now.isocalendar()  # iso_day: 1=Mon ... 7=Sun
+
+          # Seed is stable for the whole ISO week, so the same 4 days
+          # are chosen no matter which day the workflow runs on.
+          random.seed(f"{iso_year}-W{iso_week}")
+          chosen_days = sorted(random.sample(range(1, 8), 4))
+
+          run_today = iso_day in chosen_days
+
+          print(f"ISO week: {iso_year}-W{iso_week}, today={iso_day}, chosen={chosen_days}, run_today={run_today}")
+
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f"run_today={'true' if run_today else 'false'}\n")
+              f.write(f"chosen_days={chosen_days}\n")
+          PY
+
       - name: Login to Docker Hub
+        if: steps.pick.outputs.run_today == 'true'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Pull Docker image
+        if: steps.pick.outputs.run_today == 'true'
         run: docker pull ${{ secrets.DOCKERHUB_USERNAME }}/mutualfund-screener:latest
 
       - name: Start container
+        if: steps.pick.outputs.run_today == 'true'
         run: |
           docker run -d --name fundscreener-cron -p 80:80 \
             --env ENVIRONMENT="prod" \
@@ -41,6 +66,7 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/mutualfund-screener:latest
 
       - name: Wait for service
+        if: steps.pick.outputs.run_today == 'true'
         run: |
           for i in $(seq 1 60); do
             if curl --silent --fail http://localhost/health > /dev/null 2>&1; then
@@ -55,12 +81,14 @@ jobs:
           exit 1
 
       - name: Trigger pipeline
+        if: steps.pick.outputs.run_today == 'true'
         run: |
           curl --fail --show-error --silent -X POST "http://localhost/api/v1/pipeline/trigger" \
             -H "accept: application/json" \
             -H "x-api-key: ${{ secrets.PIPELINE_TRIGGER_API_KEY }}"
 
       - name: Stream container logs (live until done or 15 min timeout)
+        if: steps.pick.outputs.run_today == 'true'
         run: |
           while IFS= read -r line; do
             echo "$line"
@@ -72,7 +100,7 @@ jobs:
           done < <(docker logs -f fundscreener-cron 2>&1) || true
 
       - name: Cleanup container
-        if: always()
+        if: always() && steps.pick.outputs.run_today == 'true'
         run: |
           docker stop fundscreener-cron || true
           docker rm fundscreener-cron || true
@@ -81,7 +109,11 @@ jobs:
         if: always()
         run: |
           mkdir -p .github/logs
-          echo "$(date -u +'%Y-%m-%d %H:%M:%S UTC') - not-enriched pipeline - ${{ job.status }}" >> .github/logs/logs
+          if [ "${{ steps.pick.outputs.run_today }}" = "true" ]; then
+            echo "$(date -u +'%Y-%m-%d %H:%M:%S UTC') - not-enriched pipeline - ${{ job.status }} - chosen_days=${{ steps.pick.outputs.chosen_days }}" >> .github/logs/logs
+          else
+            echo "$(date -u +'%Y-%m-%d %H:%M:%S UTC') - not-enriched pipeline - skipped (not a selected day) - chosen_days=${{ steps.pick.outputs.chosen_days }}" >> .github/logs/logs
+          fi
 
           git config user.name "deep-div"
           git config user.email "div20023041@gmail.com"
