@@ -5,7 +5,8 @@ permissions:
 
 on:
   schedule:
-    - cron: '30 2 * * *'
+    # Sunday (0) to Friday (5); Saturday is never triggered
+    - cron: '30 2 * * 0-5'
   workflow_dispatch:
 
 jobs:
@@ -23,20 +24,32 @@ jobs:
           import random, datetime, os
 
           now = datetime.datetime.utcnow()
-          iso_year, iso_week, iso_day = now.isocalendar()  # iso_day: 1=Mon ... 7=Sun
 
-          # Seed is stable for the whole ISO week, so the same 4 days
-          # are chosen no matter which day the workflow runs on.
+          # Week runs Sunday..Friday (Saturday excluded).
+          # Shift forward one day so Sunday counts as the START of the week:
+          # Sun->Mon, Mon->Tue, ... Fri->Sat, Sat->Sun (same ISO week as the Sun..Fri before it)
+          shifted = now + datetime.timedelta(days=1)
+          iso_year, iso_week, _ = shifted.isocalendar()
+
+          # Today's day in a Sunday-first scheme: Sun=0, Mon=1, ... Fri=5, Sat=6
+          today = (now.weekday() + 1) % 7
+
+          # Seed is stable for the whole Sun..Sat week,
+          # so the same 4 days are chosen no matter which day the workflow runs on.
           random.seed(f"{iso_year}-W{iso_week}")
-          chosen_days = sorted(random.sample(range(1, 8), 4))
+          eligible = [0, 1, 2, 3, 4, 5]          # Sun..Fri (6 = Saturday excluded)
+          chosen_days = sorted(random.sample(eligible, 4))
 
-          run_today = iso_day in chosen_days
+          run_today = today in chosen_days
 
-          print(f"ISO week: {iso_year}-W{iso_week}, today={iso_day}, chosen={chosen_days}, run_today={run_today}")
+          names = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+          chosen_names = [names[d] for d in chosen_days]
+
+          print(f"Week: {iso_year}-W{iso_week}, today={names[today]}, chosen={chosen_names}, run_today={run_today}")
 
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write(f"run_today={'true' if run_today else 'false'}\n")
-              f.write(f"chosen_days={chosen_days}\n")
+              f.write(f"chosen_days={chosen_names}\n")
           PY
 
       - name: Login to Docker Hub
@@ -73,7 +86,7 @@ jobs:
               echo "Service is up"
               exit 0
             fi
-            echo "Attempt $i/30 - waiting..."
+            echo "Attempt $i/60 - waiting..."
             sleep 5
           done
           echo "Service failed to start after 300s"
