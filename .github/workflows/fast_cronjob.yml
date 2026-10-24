@@ -5,8 +5,8 @@ permissions:
 
 on:
   schedule:
-    # Sunday (0) to Friday (5); Saturday is never triggered
-    - cron: '30 2 * * 0-5'
+    # Monday (1) through Thursday (4); Friday, Saturday, and Sunday are never triggered
+    - cron: '30 2 * * 1-4'
   workflow_dispatch:
 
 jobs:
@@ -25,19 +25,18 @@ jobs:
 
           now = datetime.datetime.utcnow()
 
-          # Week runs Sunday..Friday (Saturday excluded).
-          # Shift forward one day so Sunday counts as the START of the week:
-          # Sun->Mon, Mon->Tue, ... Fri->Sat, Sat->Sun (same ISO week as the Sun..Fri before it)
+          # Week runs Monday..Thursday (Friday, Saturday, Sunday excluded).
+          # Shift forward one day so the week remains consistent.
           shifted = now + datetime.timedelta(days=1)
           iso_year, iso_week, _ = shifted.isocalendar()
 
-          # Today's day in a Sunday-first scheme: Sun=0, Mon=1, ... Fri=5, Sat=6
+          # Today's day in a Sunday-first scheme: Sun=0, Mon=1, ... Sat=6
           today = (now.weekday() + 1) % 7
 
-          # Seed is stable for the whole Sun..Sat week,
+          # Seed is stable for the whole week,
           # so the same 4 days are chosen no matter which day the workflow runs on.
           random.seed(f"{iso_year}-W{iso_week}")
-          eligible = [0, 1, 2, 3, 4, 5]          # Sun..Fri (6 = Saturday excluded)
+          eligible = [1, 2, 3, 4]  # Monday..Thursday
           chosen_days = sorted(random.sample(eligible, 4))
 
           run_today = today in chosen_days
