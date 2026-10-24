@@ -1,4 +1,4 @@
-EQUITY_DEFAULT_SCREENS = [
+﻿EQUITY_DEFAULT_SCREENS = [
     {
         "external_id": "equity-large-cap-core",
         "name": "Equity Large Cap Core",
@@ -7,9 +7,6 @@ EQUITY_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Equity"]},
                 "scheme_sub_category": {"in": ["Large Cap Fund"]},
-                "cagr_3y": {"gte": 11},
-                "volatility": {"lte": 16},
-                "mdd_three_year_pct": {"lte": 20},
             },
             "sort_field": "cagr_3y",
             "sort_order": "desc",
@@ -35,9 +32,6 @@ EQUITY_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Equity"]},
                 "scheme_sub_category": {"in": ["Large & Mid Cap Fund"]},
-                "cagr_3y": {"gte": 12},
-                "cagr_5y": {"gte": 12},
-                "mdd_three_year_pct": {"lte": 24},
             },
             "sort_field": "cagr_5y",
             "sort_order": "desc",
@@ -63,9 +57,6 @@ EQUITY_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Equity"]},
                 "scheme_sub_category": {"in": ["Mid Cap Fund"]},
-                "cagr_3y": {"gte": 14},
-                "sharpe": {"gte": 0.8},
-                "mdd_three_year_pct": {"lte": 30},
             },
             "sort_field": "cagr_3y",
             "sort_order": "desc",
@@ -92,10 +83,6 @@ EQUITY_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Equity"]},
                 "scheme_sub_category": {"in": ["Small Cap Fund"]},
-                "cagr_3y": {"gte": 15},
-                "cagr_5y": {"gte": 14},
-                "sortino": {"gte": 0.7},
-                "mdd_three_year_pct": {"lte": 36},
             },
             "sort_field": "cagr_5y",
             "sort_order": "desc",
@@ -122,10 +109,6 @@ EQUITY_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Equity"]},
                 "scheme_sub_category": {"in": ["Flexi Cap Fund"]},
-                "cagr_3y": {"gte": 12},
-                "cagr_5y": {"gte": 12},
-                "volatility": {"lte": 18},
-                "downside_deviation": {"lte": 11},
             },
             "sort_field": "cagr_5y",
             "sort_order": "desc",
@@ -150,9 +133,6 @@ EQUITY_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Equity"]},
                 "scheme_sub_category": {"in": ["Multi Cap Fund"]},
-                "cagr_3y": {"gte": 12},
-                "sharpe": {"gte": 0.8},
-                "volatility": {"lte": 20},
             },
             "sort_field": "sharpe",
             "sort_order": "desc",
@@ -178,9 +158,6 @@ EQUITY_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Equity"]},
                 "scheme_sub_category": {"in": ["Value Fund", "Contra Fund"]},
-                "cagr_3y": {"gte": 11},
-                "sharpe": {"gte": 0.7},
-                "mdd_three_year_pct": {"lte": 28},
             },
             "sort_field": "sharpe",
             "sort_order": "desc",
@@ -205,9 +182,6 @@ EQUITY_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Equity"]},
                 "scheme_sub_category": {"in": ["Index Fund"]},
-                "cagr_3y": {"gte": 10},
-                "volatility": {"lte": 17},
-                "mdd_three_year_pct": {"lte": 22},
             },
             "sort_field": "volatility",
             "sort_order": "asc",
@@ -235,9 +209,6 @@ DEBT_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Debt"]},
                 "scheme_sub_category": {"in": ["Liquid Fund", "Overnight Fund"]},
-                "cagr_1y": {"gte": 5},
-                "mdd_one_year_pct": {"lte": 1.5},
-                "volatility": {"lte": 3},
             },
             "sort_field": "mdd_one_year_pct",
             "sort_order": "asc",
@@ -266,9 +237,6 @@ DEBT_DEFAULT_SCREENS = [
                 "scheme_sub_category": {
                     "in": ["Ultra Short Duration Fund", "Low Duration Fund", "Short Duration Fund"]
                 },
-                "cagr_3y": {"gte": 6},
-                "mdd_three_year_pct": {"lte": 7},
-                "downside_deviation": {"lte": 4},
             },
             "sort_field": "cagr_3y",
             "sort_order": "desc",
@@ -294,9 +262,6 @@ DEBT_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Debt"]},
                 "scheme_sub_category": {"in": ["Money Market Fund"]},
-                "cagr_1y": {"gte": 5.5},
-                "volatility": {"lte": 4},
-                "mdd_one_year_pct": {"lte": 2},
             },
             "sort_field": "volatility",
             "sort_order": "asc",
@@ -322,9 +287,6 @@ DEBT_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Debt"]},
                 "scheme_sub_category": {"in": ["Corporate Bond Fund"]},
-                "cagr_3y": {"gte": 6.5},
-                "sharpe": {"gte": 0.7},
-                "mdd_three_year_pct": {"lte": 9},
             },
             "sort_field": "sharpe",
             "sort_order": "desc",
@@ -350,9 +312,6 @@ DEBT_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Debt"]},
                 "scheme_sub_category": {"in": ["Banking and PSU Fund"]},
-                "cagr_3y": {"gte": 6.5},
-                "downside_deviation": {"lte": 4.5},
-                "mdd_three_year_pct": {"lte": 8},
             },
             "sort_field": "cagr_3y",
             "sort_order": "desc",
@@ -377,9 +336,6 @@ DEBT_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Debt"]},
                 "scheme_sub_category": {"in": ["Gilt Fund"]},
-                "cagr_3y": {"gte": 6},
-                "volatility": {"lte": 9},
-                "mdd_three_year_pct": {"lte": 14},
             },
             "sort_field": "mdd_three_year_pct",
             "sort_order": "asc",
@@ -403,9 +359,6 @@ DEBT_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Debt"]},
                 "scheme_sub_category": {"in": ["Dynamic Bond Fund"]},
-                "cagr_3y": {"gte": 6.5},
-                "sortino": {"gte": 0.7},
-                "mdd_three_year_pct": {"lte": 12},
             },
             "sort_field": "sortino",
             "sort_order": "desc",
@@ -433,9 +386,6 @@ HYBRID_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Hybrid"]},
                 "scheme_sub_category": {"in": ["Aggressive Hybrid Fund"]},
-                "cagr_3y": {"gte": 10.5},
-                "cagr_5y": {"gte": 10},
-                "mdd_three_year_pct": {"lte": 22},
             },
             "sort_field": "cagr_3y",
             "sort_order": "desc",
@@ -483,9 +433,6 @@ HYBRID_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Hybrid"]},
                 "scheme_sub_category": {"in": ["Conservative Hybrid Fund"]},
-                "cagr_3y": {"gte": 7},
-                "volatility": {"lte": 10},
-                "mdd_three_year_pct": {"lte": 10},
             },
             "sort_field": "volatility",
             "sort_order": "asc",
@@ -510,9 +457,6 @@ HYBRID_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Hybrid"]},
                 "scheme_sub_category": {"in": ["Dynamic Asset Allocation Fund"]},
-                "cagr_3y": {"gte": 8.5},
-                "sortino": {"gte": 0.8},
-                "mdd_three_year_pct": {"lte": 15},
             },
             "sort_field": "sortino",
             "sort_order": "desc",
@@ -536,9 +480,6 @@ HYBRID_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Hybrid"]},
                 "scheme_sub_category": {"in": ["Equity Savings Fund"]},
-                "cagr_3y": {"gte": 7.5},
-                "volatility": {"lte": 11},
-                "mdd_three_year_pct": {"lte": 12},
             },
             "sort_field": "mdd_three_year_pct",
             "sort_order": "asc",
@@ -561,9 +502,6 @@ HYBRID_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Hybrid"]},
                 "scheme_sub_category": {"in": ["Multi Asset Allocation Fund"]},
-                "cagr_3y": {"gte": 8.5},
-                "sharpe": {"gte": 0.75},
-                "mdd_three_year_pct": {"lte": 18},
             },
             "sort_field": "sharpe",
             "sort_order": "desc",
@@ -586,9 +524,6 @@ HYBRID_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Hybrid"]},
                 "scheme_sub_category": {"in": ["Arbitrage Fund"]},
-                "cagr_1y": {"gte": 5.5},
-                "volatility": {"lte": 4},
-                "mdd_one_year_pct": {"lte": 2},
             },
             "sort_field": "volatility",
             "sort_order": "asc",
@@ -614,8 +549,6 @@ GOLD_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Commodity"]},
                 "scheme_sub_category": {"in": ["Gold"]},
-                "mdd_one_year_pct": {"lte": 16},
-                "mdd_three_year_pct": {"lte": 22},
             },
             "sort_field": "mdd_one_year_pct",
             "sort_order": "asc",
@@ -640,9 +573,6 @@ GOLD_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Commodity"]},
                 "scheme_sub_category": {"in": ["Gold"]},
-                "cagr_3y": {"gte": 7},
-                "sharpe": {"gte": 0.45},
-                "sortino": {"gte": 0.55},
             },
             "sort_field": "sharpe",
             "sort_order": "desc",
@@ -665,7 +595,6 @@ GOLD_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Commodity"]},
                 "scheme_sub_category": {"in": ["Silver"]},
-                "cagr_1y": {"gte": 6},
             },
             "sort_field": "cagr_1y",
             "sort_order": "desc",
@@ -689,8 +618,6 @@ GOLD_DEFAULT_SCREENS = [
             "screens": {
                 "scheme_class": {"in": ["Commodity"]},
                 "scheme_sub_category": {"in": ["Gold", "Silver"]},
-                "cagr_3y": {"gte": 6.5},
-                "mdd_three_year_pct": {"lte": 28},
             },
             "sort_field": "cagr_3y",
             "sort_order": "desc",
