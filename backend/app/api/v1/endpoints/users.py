@@ -34,6 +34,30 @@ def _get_uid_from_token(token: str) -> str:
     return uid
 
 
+def _ensure_user_from_token(token: str) -> str:
+    """Resolve the uid from the token and upsert the users row, so FK-dependent
+    writes never fail just because the profile row is missing or was deleted."""
+    claims = _get_claims_from_token(token)
+    uid = _get_uid_from_token(token)
+
+    provider = None
+    firebase_claim = claims.get("firebase")
+    if isinstance(firebase_claim, dict):
+        provider = firebase_claim.get("sign_in_provider")
+
+    upsert_user(
+        {
+            "uid": uid,
+            "email": claims.get("email"),
+            "phone": claims.get("phone_number"),
+            "email_verified": claims.get("email_verified"),
+            "name": claims.get("name") or claims.get("displayName"),
+            "provider": provider,
+        }
+    )
+    return uid
+
+
 def _normalize_external_ids_input(external_ids: list[str] | None) -> list[str]:
     if not external_ids:
         return []
@@ -56,24 +80,7 @@ def create_or_update_user(
     token: str = Query(...),
 ):
     try:
-        claims = _get_claims_from_token(token)
-        uid = _get_uid_from_token(token)
-
-        provider = None
-        firebase_claim = claims.get("firebase")
-        if isinstance(firebase_claim, dict):
-            provider = firebase_claim.get("sign_in_provider")
-
-        upsert_user(
-            {
-                "uid": uid,
-                "email": claims.get("email"),
-                "phone": claims.get("phone_number"),
-                "email_verified": claims.get("email_verified"),
-                "name": claims.get("name") or claims.get("displayName"),
-                "provider": provider,
-            }
-        )
+        _ensure_user_from_token(token)
         return {"status": "ok"}
     except HTTPException:
         raise
@@ -86,7 +93,7 @@ def create_or_update_user(
 @router.post("/users/screens", status_code=201)
 def add_screens(payload: UserScreenCreate, token: str = Query(...)):
     try:
-        token_uid = _get_uid_from_token(token)
+        token_uid = _ensure_user_from_token(token)
         external_id = add_user_screens(
             uid=token_uid,
             screens=payload.screens,
@@ -150,7 +157,7 @@ def get_default_screens():
 @router.put("/users/screens/{external_id}", status_code=200)
 def update_screens(external_id: str, payload: UserScreenCreate, token: str = Query(...)):
     try:
-        token_uid = _get_uid_from_token(token)
+        token_uid = _ensure_user_from_token(token)
         updated = update_user_screens(
             uid=token_uid,
             external_id=external_id,
